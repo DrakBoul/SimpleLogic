@@ -1,10 +1,17 @@
 from sympy.logic import POSform, SOPform
-import matplotlib.pyplot as plt
+from itertools import product
 
 def evaluate_expression(expression, variables, assignment):
     """Evaluate the boolean expression for a given variable assignment."""
     substitution = dict(zip(variables, assignment))
-    return eval(expression, substitution)
+    return eval(expression, {}, substitution)
+
+#might need to keep this function. needs more testing
+# def evaluate_expression(expression, variables, assignment):
+#     """Evaluate the boolean expression for a given variable assignment."""
+#     substitution = dict(zip(variables, assignment))
+
+#     return eval(expression, substitution)
 
 def generate_minterms(expression, variables):
     """Generate all minterms for a boolean expression."""
@@ -17,7 +24,7 @@ def generate_minterms(expression, variables):
         if evaluate_expression(expression, variables, assignments):
             minterms.append(i)
 
-    return minterms
+    return minterms 
 
 
 def convert_to_pos(content):
@@ -26,6 +33,7 @@ def convert_to_pos(content):
     var_list = var_str.split()
     minterms = generate_minterms(expr_str, var_list)
     pos_form = POSform(var_list, minterms)
+    
     return pos_form
 
 def convert_to_sop(content):
@@ -34,5 +42,21 @@ def convert_to_sop(content):
     var_list = var_str.split()
     minterms = generate_minterms(expr_str, var_list)
     pos_form = SOPform(var_list, minterms)
+
     return pos_form
 
+def generate_truth_table(expression, variables):
+    """Generate the truth table for a boolean expression."""
+    num_variables = len(variables)
+    truth_table = []
+
+    for assignment in product([0, 1], repeat=num_variables):
+            row = list(assignment)
+            row.append(str(evaluate_expression(expression, variables, assignment)))
+            truth_table.append(row)
+    return truth_table
+
+# variables = ["A", "B", "C"]
+# expression = "~A & B | C & B"
+# print(generate_truth_table(expression, variables))
+# print(generate_minterms(expression, variables))
