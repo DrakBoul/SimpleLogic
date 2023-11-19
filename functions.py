@@ -1,5 +1,7 @@
-from sympy.logic import POSform, SOPform
+from sympy.logic import POSform, SOPform, gateinputcount
+from sympy import sympify
 from itertools import product
+import re
 
 def evaluate_expression(expression, variables, assignment):
     """Evaluate the boolean expression for a given variable assignment."""
@@ -56,7 +58,14 @@ def generate_truth_table(expression, variables):
             truth_table.append(row)
     return truth_table
 
-# variables = ["A", "B", "C"]
-# expression = "~A & B | C & B"
-# print(generate_truth_table(expression, variables))
-# print(generate_minterms(expression, variables))
+def get_num_gates(expression):
+    expression =str(expression)
+    and_count = len(re.findall(r'&', expression))
+    or_count = len(re.findall(r'\|', expression))
+    not_count = len(re.findall(r'~', expression))
+    return and_count + or_count + not_count
+
+def get_num_gate_inputs(expression):
+    count = gateinputcount(expression)
+    return count
+

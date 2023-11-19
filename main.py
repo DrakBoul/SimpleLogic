@@ -3,7 +3,6 @@ from tkinter import font
 from functions import *
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from sympy.logic.boolalg import sympify
 from timing_diagram_v1 import plot_timing_diagram
 
 class App(tk.Tk):
@@ -90,8 +89,9 @@ class Visualize(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent, bg="#292929")
         
+        custom_font_label = font.Font(family="Helvetica", size=14)
         
-        self.text_widget = tk.Text(self, height=2, width=70, font=70, bg="#292929", fg="white")
+        self.text_widget = tk.Text(self, height=2, width=50, font=custom_font_label, bg="#292929", fg="white")
         self.text_widget.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
         # Initialize instruction truth
@@ -109,8 +109,8 @@ class Visualize(tk.Frame):
         self.message_label = tk.Label(self, text="", fg="#800000", bg="#292929", font=12)
         self.message_label.grid(row=2, column=0, pady=10, columnspan=2)
 
-        go_back_button = tk.Button(self, text="Go Back", bg="#800000", fg="white", command= self.go_back)
-        go_back_button.grid(row=0, column=3, pady=40, padx=20)
+        go_back_button = tk.Button(self, text="Go Back", bg="#800000", fg="white", font=24, height =2, command= self.go_back)
+        go_back_button.grid(row=0, column=3, pady=40, padx=20, sticky="ew", )
 
         # Frame for matplot lib figure
         self.plot_frame = tk.Frame(self, bg="#292929")
@@ -131,7 +131,6 @@ class Visualize(tk.Frame):
         content = app.get_text(self.text_widget)
         
         try:
-            # Code to generate plot here
             self.generate_matplotlib_plot(content)
         except Exception as e:
             print(e)
@@ -145,13 +144,11 @@ class Visualize(tk.Frame):
             widget.destroy()
         expression, var_str = content.split(',')
         variables = var_str.split()
-        # Create a Matplotlib figure and axis
+        
         fig, ax = plt.subplots( len(variables) + 1, 1, figsize=(10, 6), sharex=True)
-
 
         plot_timing_diagram(ax, variables, expression)
 
-        # Embed the Matplotlib figure in the Tkinter window
         canvas = FigureCanvasTkAgg(fig, master=self.plot_frame)
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.pack(fill=tk.BOTH, expand=True)
@@ -170,9 +167,11 @@ class Visualize(tk.Frame):
         # Changing the instruction truth to its complement acts as a toggle for instructions
         self.instruction_truth = not self.instruction_truth
         if self.instruction_truth:
-            intructions = """Use A, B, C, D as variables for the boolean expression (works for up to and including 4 varibles). 
-            Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. Ex: ~A | A&B
-            Or enter the minterms as a tuple followed by the don't care terms as a tuple Ex: (1,4,5,6,7) (0,8,9) """
+            intructions = """
+            Works for up to and including 4 variables. 
+            Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. 
+            After entering your expression enter the variables used in your expression space seperated. Ex: ~A | A & B, A B
+            """
             self.message_label.config(text=intructions, fg = "white")
         else:
             self.message_label.config(text="", fg = "white")
@@ -191,43 +190,60 @@ class Simplify(tk.Frame):
         # Intialize intruction truth
         self.instruction_truth = False
         instruction_button = tk.Button(self, text="Instructions", bg = "#555555", fg="white", font=24, height=2, command= self.on_instruction_click)
-        instruction_button.grid(row=1, column=3,  padx=10, pady=10, sticky ="we")
+        instruction_button.grid(row=1, column=2,  pady=40, padx=20, sticky="ew")
 
         # Create a button to get the content of the Text widget
-        evaluate_button = tk.Button(self, text="Visualize Expression", font=24, height=2, bg="#800080", fg="white", command= self.on_evaluate_click)
+        evaluate_button = tk.Button(self, text="Simplify Expression", font=24, height=2, bg="#800080", fg="white", command= self.on_evaluate_click)
         evaluate_button.grid(row=1, column=0,  padx=10, pady=10, sticky ="we")
 
         clear_entry_button = tk.Button(self, text="Clear", bg="#555555", font=24, height=2, command= self.on_clear_click)
         clear_entry_button.grid(row=1, column=1, padx=10, pady=10, sticky ="we")
 
         self.message_label = tk.Label(self, text="", fg="white", bg="#292929", font=12)
-        self.message_label.grid(row=2, column=0, pady=10, columnspan=2)
+        self.message_label.grid(row=2, column=0, pady=10, columnspan=4, sticky="new")
 
+        results_frame = tk.Frame(self, bg="#292929")
+        results_frame.grid(row=3, column=0, columnspan=4, rowspan=2, sticky="nsew")
         # Wraplength is used to prevent overflow, it is specified in centimeters rather then screen units
         # to allow for a more consistent visual across devices of different resolution
-        self.pos_label_title = tk.Label(self, text="", fg="white", bg="#292929", font=custom_font_title, wraplength="10c")
-        self.pos_label_title.grid(row=3, column=0, columnspan=2, sticky="nw")
-        self.pos_label = tk.Label(self, text="", fg="white", bg="#292929", font=custom_font_label, wraplength="10c")
-        self.pos_label.grid(row=4, column=0, columnspan=2, sticky="nw", padx=10)
+        self.pos_label_title = tk.Label(results_frame, text="", fg="white", bg="#292929", font=custom_font_title, wraplength="10c")
+        self.pos_label_title.grid(row=0, column=0, columnspan=2, sticky="nw")
+        self.pos_label = tk.Label(results_frame, text="", fg="white", bg="#292929", font=custom_font_label)
+        self.pos_label.grid(row=1, column=0, sticky="nw")
+        self.pos_gate_count = tk.Label(results_frame, text="", fg="white", bg="#292929", font=custom_font_label)
+        self.pos_gate_count.grid(row=2, column=0, sticky="nw")
+        self.pos_input_count = tk.Label(results_frame, text="", fg="white", bg="#292929", font=custom_font_label)
+        self.pos_input_count.grid(row=3, column=0, sticky="nw")
 
-        self.sop_label_title = tk.Label(self, text="", fg="white", bg="#292929", font=custom_font_title, wraplength="10c")
-        self.sop_label_title.grid(row=3, column=2, columnspan=1, sticky="nw")
-        self.sop_label = tk.Label(self, text="", fg="white", bg="#292929", font=custom_font_label, wraplength="10c")
-        self.sop_label.grid(row=4, column=2, columnspan=2, sticky="nw")
+        self.sop_label_title = tk.Label(results_frame, text="", fg="white", bg="#292929", font=custom_font_title)
+        self.sop_label_title.grid(row=0, column=1, sticky="nw")
+        self.sop_label = tk.Label(results_frame, text="", fg="white", bg="#292929", font=custom_font_label, wraplength="10c")
+        self.sop_label.grid(row=1, column=1, sticky="nw")
+        self.sop_gate_count = tk.Label(results_frame, text="", fg="white", bg="#292929", font=custom_font_label)
+        self.sop_gate_count.grid(row=2, column=1, sticky="nw")
+        self.sop_input_count = tk.Label(results_frame, text="", fg="white", bg="#292929", font=custom_font_label)
+        self.sop_input_count.grid(row=3, column=1, sticky="nw")
 
-        go_back_button = tk.Button(self, text="Go Back", bg="#800000", fg="white", command= self.go_back)
-        go_back_button.grid(row=0, column=3, pady=40, padx=20)
+        go_back_button = tk.Button(self, text="Go Back", bg="#800000", fg="white", width=10, height =2, font=24, command= self.go_back)
+        go_back_button.grid(row=0, column=2, pady=40, padx=20, sticky = "nsew")
 
-        # Setup grid configuration
+        # Setup grid configuration for Simplify frame
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.columnconfigure(2, weight=1)
-        self.columnconfigure(3, weight=1)
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=1)
-        self.rowconfigure(3, weight=1)
-        self.rowconfigure(4, weight=1)
+        self.rowconfigure(3, weight=10)
+
+        # Setup grid configuration for Results Frame
+        results_frame.columnconfigure(0, weight=1)
+        results_frame.columnconfigure(1, weight=1)
+        results_frame.rowconfigure(0, weight=1)
+        results_frame.rowconfigure(1, weight=1)
+        results_frame.rowconfigure(2, weight=1)
+        results_frame.rowconfigure(3, weight=1)
+        
 
     def on_evaluate_click(self):
         content = app.get_text(self.text_widget)
@@ -237,28 +253,39 @@ class Simplify(tk.Frame):
             
             pos_form = convert_to_pos(content)
             sop_form = convert_to_sop(content)
+            pos_inputs = get_num_gate_inputs(pos_form)
+            pos_gate_count = get_num_gates(pos_form)
+            sop_inputs = get_num_gate_inputs(sop_form)
+            sop_gate_count = get_num_gates(sop_form)
 
             self.pos_label_title.config(text="Miminmized POS form:")
             self.pos_label.config(text=f"F= {pos_form}")
+            self.pos_gate_count.config(text=f"Number of Gates used: {pos_gate_count}")
+            self.pos_input_count.config(text=f"Number of inputs used: {pos_inputs}")
+
 
             self.sop_label_title.config(text="Miminmized SOP form:")
             self.sop_label.config(text=f"F= {sop_form}")
-
+            self.sop_gate_count.config(text=f"Number of Gates used: {sop_gate_count}")
+            self.sop_input_count.config(text=f"Number of inputs used: {sop_inputs}")
          
                 
-        except:
-            # If both attempts fail, raise an exception
+        except Exception as e:
+            print(e)
             msg = """The expression you input in invalid. Please Check your syntax. See Instruction to see use of proper syntax."""
             self.message_label.config(text=msg,fg="red")
-            # raise ValueError("Input does not match expected format")
 
     def on_clear_click(self):
         app.clear_text(self.text_widget)
         self.message_label.config(text="")
         self.pos_label_title.config(text="")
         self.pos_label.config(text="")
+        self.pos_gate_count.config(text="")
+        self.pos_input_count.config(text="")
         self.sop_label_title.config(text="")
         self.sop_label.config(text="")
+        self.sop_gate_count.config(text="")
+        self.sop_input_count.config(text="")
 
 
     def go_back(self):
