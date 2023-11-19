@@ -107,7 +107,7 @@ class Visualize(tk.Frame):
         clear_entry_button.grid(row=1, column=1, padx=10, pady=10, sticky ="we")
 
         self.message_label = tk.Label(self, text="", fg="#800000", bg="#292929", font=12)
-        self.message_label.grid(row=2, column=0, pady=10, columnspan=2)
+        self.message_label.grid(row=2, column=0, pady=10, columnspan=4)
 
         go_back_button = tk.Button(self, text="Go Back", bg="#800000", fg="white", font=24, height =2, command= self.go_back)
         go_back_button.grid(row=0, column=3, pady=40, padx=20, sticky="ew", )
@@ -168,8 +168,7 @@ class Visualize(tk.Frame):
         self.instruction_truth = not self.instruction_truth
         if self.instruction_truth:
             intructions = """
-            Works for up to and including 4 variables. 
-            Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. 
+            Works for up to and including 4 variables. Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. 
             After entering your expression enter the variables used in your expression space seperated. Ex: ~A | A & B, A B
             """
             self.message_label.config(text=intructions, fg = "white")
@@ -225,7 +224,7 @@ class Simplify(tk.Frame):
         self.sop_input_count.grid(row=3, column=1, sticky="nw")
 
         go_back_button = tk.Button(self, text="Go Back", bg="#800000", fg="white", width=10, height =2, font=24, command= self.go_back)
-        go_back_button.grid(row=0, column=2, pady=40, padx=20, sticky = "nsew")
+        go_back_button.grid(row=0, column=2, pady=40, padx=20, sticky = "ew")
 
         # Setup grid configuration for Simplify frame
         self.columnconfigure(0, weight=1)
