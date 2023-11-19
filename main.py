@@ -1,4 +1,5 @@
 import tkinter as tk
+from functions import *
 from sympy.logic.boolalg import sympify, to_cnf
 
 
@@ -85,8 +86,7 @@ class MainFrame(tk.Frame):
 class Visualize(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent, bg="#292929")
-        msg = """Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. Ex: ~A | A&B
-        Or enter the minterms as a tuple followed by the don't care terms as a tuple Ex: (1,4,5,6,7) (0,8,9) """
+        
         
         self.text_widget = tk.Text(self, height=2, width=70, font=70, bg="#292929", fg="white")
         self.text_widget.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
@@ -162,9 +162,10 @@ class Visualize(tk.Frame):
         # Changing the instruction truth to its complement acts as a toggle for instructions
         self.instruction_truth = not self.instruction_truth
         if self.instruction_truth:
-            msg = """Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. Ex: ~A | A&B
+            intructions = """Use A, B, C, D as variables for the boolean expression (works for up to and including 4 varibles). 
+            Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. Ex: ~A | A&B
             Or enter the minterms as a tuple followed by the don't care terms as a tuple Ex: (1,4,5,6,7) (0,8,9) """
-            self.message_label.config(text=msg, fg = "white")
+            self.message_label.config(text=intructions, fg = "white")
         else:
             self.message_label.config(text="", fg = "white")
 
@@ -234,6 +235,18 @@ class Simplify(tk.Frame):
 
     def go_back(self):
         app.show_frame("main")
+
+    def on_instruction_click(self):
+        # Changing the instruction truth to its complement acts as a toggle for instructions
+        self.instruction_truth = not self.instruction_truth
+        if self.instruction_truth:
+            intructions = """
+            Works for up to and including 4 variables. Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. 
+            After entering your expression enter the variables used in your expression space seperated. Ex: ~A | A & B, A B
+            """
+            self.message_label.config(text=intructions, fg = "white")
+        else:
+            self.message_label.config(text="", fg = "white")
 
 
 
