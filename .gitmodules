@@ -1,0 +1,6 @@
+[submodule "matplotlib"]
+	path = matplotlib
+	url = https://github.com/matplotlib/matplotlib.git
+[submodule "sympy"]
+	path = sympy
+	url = https://github.com/sympy/sympy.git

@@ -168,7 +168,7 @@ class Visualize(tk.Frame):
         self.instruction_truth = not self.instruction_truth
         if self.instruction_truth:
             intructions = """
-            Works for up to and including 4 variables. Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. 
+            Works for up to and including 6 variables. Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. 
             After entering your expression enter the variables used in your expression space seperated. Ex: ~A | A & B, A B
             """
             self.message_label.config(text=intructions, fg = "white")
@@ -257,13 +257,13 @@ class Simplify(tk.Frame):
             sop_inputs = get_num_gate_inputs(sop_form)
             sop_gate_count = get_num_gates(sop_form)
 
-            self.pos_label_title.config(text="Miminmized POS form:")
+            self.pos_label_title.config(text="Minimized POS form:")
             self.pos_label.config(text=f"F= {pos_form}")
             self.pos_gate_count.config(text=f"Number of Gates used: {pos_gate_count}")
             self.pos_input_count.config(text=f"Number of inputs used: {pos_inputs}")
 
 
-            self.sop_label_title.config(text="Miminmized SOP form:")
+            self.sop_label_title.config(text="Minimized SOP form:")
             self.sop_label.config(text=f"F= {sop_form}")
             self.sop_gate_count.config(text=f"Number of Gates used: {sop_gate_count}")
             self.sop_input_count.config(text=f"Number of inputs used: {sop_inputs}")
@@ -295,7 +295,7 @@ class Simplify(tk.Frame):
         self.instruction_truth = not self.instruction_truth
         if self.instruction_truth:
             intructions = """
-            Works for up to and including 4 variables. Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. 
+            Works for up to and including 6 variables. Use '|' for 'or', '&' for 'and' and '~' for the complement of a variable. 
             After entering your expression enter the variables used in your expression space seperated. Ex: ~A | A & B, A B
             """
             self.message_label.config(text=intructions, fg = "white")

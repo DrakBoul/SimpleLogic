@@ -69,3 +69,4 @@ def get_num_gate_inputs(expression):
     count = gateinputcount(expression)
     return count
 
+
