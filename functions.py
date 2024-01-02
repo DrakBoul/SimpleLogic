@@ -1,5 +1,7 @@
-from sympy.logic import POSform, SOPform, gateinputcount
-from sympy import sympify
+# import sys
+# sys.path.insert(1, "sympy")
+from sympy.sympy.logic import POSform, SOPform, gateinputcount
+from sympy.sympy import sympify
 from itertools import product
 import re
 
