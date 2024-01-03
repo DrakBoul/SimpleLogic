@@ -2,7 +2,6 @@ import sys
 import tkinter as tk
 from tkinter import font
 from functions import *
-sys.path.insert(0, "matplotlib")
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from timing_diagram_v1 import plot_timing_diagram
